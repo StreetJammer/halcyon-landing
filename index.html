@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halcyon — Launch films</title>
+<meta name="description" content="Halcyon makes launch films for startups. Made with taste.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#292919;
+    --bg-2:#222214;
+    --text:#efe9dc;
+    --muted:#a9a48f;
+    --faint:rgba(239,233,220,.14);
+    --accent:#c9b37e;
+    --serif:"Instrument Serif", Georgia, "Times New Roman", serif;
+    --sans:"Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --pad:clamp(20px, 5vw, 64px);
+    --ease:cubic-bezier(.2,.7,.2,1);
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--text);font:400 17px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img,svg{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  em{font-style:italic;color:var(--accent)}
+  ::selection{background:var(--accent);color:var(--bg)}
+  :focus-visible{outline:1px solid var(--accent);outline-offset:4px}
+
+  .skip{position:absolute;left:var(--pad);top:-60px;background:var(--text);color:var(--bg);padding:10px 16px;z-index:100;transition:top .2s}
+  .skip:focus{top:12px}
+
+  /* Links: underline draws in */
+  .u{position:relative;display:inline-block}
+  .u::after{content:"";position:absolute;left:0;bottom:-2px;width:100%;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .6s var(--ease)}
+  .u:hover::after,.u:focus-visible::after{transform:scaleX(1);transform-origin:left}
+
+  .btn{display:inline-flex;align-items:center;gap:.6em;border:1px solid var(--text);padding:.85em 1.4em;font:500 14px/1 var(--sans);letter-spacing:.04em;transition:background .5s var(--ease),color .5s var(--ease)}
+  .btn:hover,.btn:focus-visible{background:var(--text);color:var(--bg)}
+  .btn .arr{transition:transform .5s var(--ease)}
+  .btn:hover .arr{transform:translateX(4px)}
+
+  .label{font:500 12px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+  .serif{font-family:var(--serif);font-weight:400;letter-spacing:-.01em}
+
+  /* Header */
+  header{position:sticky;top:0;z-index:50;background:rgba(41,41,25,.92);backdrop-filter:saturate(1.1);border-bottom:1px solid var(--faint)}
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px var(--pad)}
+  .brand{display:flex;align-items:baseline;gap:14px}
+  .wordmark{font-family:var(--serif);font-size:26px;line-height:1}
+  .descriptor{font-size:13px;color:var(--muted);display:none}
+  nav ul{list-style:none;margin:0;padding:0;display:flex;align-items:center;gap:28px}
+  nav .num{font-family:var(--serif);font-style:italic;color:var(--muted);margin-right:.4em}
+  .navlinks{display:none}
+  .bar .btn{padding:.7em 1.1em;font-size:13px}
+  @media (min-width:760px){.descriptor{display:inline}.navlinks{display:flex}}
+
+  /* Hero */
+  .hero{min-height:calc(100svh - 60px);display:flex;flex-direction:column;justify-content:flex-end;padding:12vh var(--pad) 10vh}
+  .hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(56px,13vw,184px);line-height:.92;letter-spacing:-.025em;margin:0 0 .35em;max-width:11ch}
+  .hero .sub{font-size:clamp(18px,2vw,22px);max-width:34ch;margin:0 0 1.4em}
+  .hero .what{display:flex;flex-wrap:wrap;gap:.4em 1.2em;color:var(--muted);font-size:14px;margin:0 0 2.6em;padding:0;list-style:none}
+  .hero .what li::before{content:"—";margin-right:.6em;color:var(--faint)}
+  .hero .what li:first-child::before{content:none}
+
+  /* Problem beats */
+  .beat{min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:0 var(--pad);border-top:1px solid var(--faint)}
+  .beat .label{margin-bottom:2.2em}
+  .beat h2{font-family:var(--serif);font-weight:400;font-size:clamp(44px,8.5vw,128px);line-height:.98;letter-spacing:-.02em;margin:0 0 .5em;max-width:14ch}
+  .beat p{font-size:clamp(18px,2vw,22px);color:var(--muted);max-width:36ch;margin:0}
+  .beat p.strong{color:var(--text)}
+
+  /* Text mask wipe */
+  .mask{display:block;overflow:hidden;padding-bottom:.08em}
+  .mask > span{display:block;transform:translateY(105%);transition:transform 1.4s var(--ease)}
+  .in .mask > span{transform:none}
+  .in .mask:nth-child(2) > span{transition-delay:.12s}
+  .in .mask:nth-child(3) > span{transition-delay:.24s}
+
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity 1.2s var(--ease),transform 1.2s var(--ease)}
+  .in .reveal,.reveal.in{opacity:1;transform:none}
+  .d1{transition-delay:.35s}.d2{transition-delay:.5s}.d3{transition-delay:.65s}
+
+  /* Sections */
+  section.block{padding:clamp(96px,16vh,180px) var(--pad);border-top:1px solid var(--faint)}
+  .block h2{font-family:var(--serif);font-weight:400;font-size:clamp(40px,6.5vw,92px);line-height:1;letter-spacing:-.02em;margin:.5em 0 1.2em;max-width:16ch}
+
+  /* Process */
+  .steps{list-style:none;margin:0;padding:0;border-top:1px solid var(--faint)}
+  .steps li{display:grid;grid-template-columns:3.2em 1fr;gap:4px 16px;padding:28px 0;border-bottom:1px solid var(--faint)}
+  .steps .n{font-family:var(--serif);font-style:italic;color:var(--accent);font-size:22px;line-height:1.3}
+  .steps h3{font-family:var(--serif);font-weight:400;font-size:clamp(30px,4vw,48px);line-height:1.05;margin:0}
+  .steps p{grid-column:2;margin:0;color:var(--muted);max-width:44ch}
+  @media (min-width:860px){
+    .steps li{grid-template-columns:5em 1fr 1.2fr;align-items:baseline;padding:36px 0}
+    .steps p{grid-column:3}
+  }
+
+  /* Logos */
+  .logos{overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+  .track{display:flex;width:max-content;animation:slide 60s linear infinite}
+  .logos:hover .track{animation-play-state:paused}
+  .logo{flex:none;width:200px;height:72px;margin-right:56px;color:var(--text);opacity:.72;transition:opacity .5s}
+  .logo:hover{opacity:1}
+  .logo svg{width:100%;height:100%}
+  @keyframes slide{to{transform:translateX(-50%)}}
+
+  /* Closing CTA */
+  .cta{text-align:left}
+  .cta h2{max-width:13ch}
+  .cta p{color:var(--muted);max-width:38ch;margin:0 0 2.4em;font-size:19px}
+
+  /* Clichés */
+  .cliches{position:relative;padding:clamp(96px,16vh,180px) 0;border-top:1px solid var(--faint);overflow:hidden;background:var(--bg-2)}
+  .row{display:flex;width:max-content;white-space:nowrap;font-family:var(--serif);font-size:clamp(32px,5vw,64px);line-height:1.25;color:var(--text);opacity:.1}
+  .row span{padding-right:.9em}
+  .row span::after{content:"·";padding-left:.9em}
+  .row.a{animation:slide 90s linear infinite}
+  .row.b{animation:slide 110s linear infinite reverse}
+  .row.c{animation:slide 100s linear infinite}
+  .final{padding:clamp(72px,12vh,140px) var(--pad) 0}
+  .final p{font-family:var(--serif);font-size:clamp(44px,8vw,120px);line-height:1;letter-spacing:-.02em;margin:0;max-width:14ch}
+
+  /* Footer */
+  footer{border-top:1px solid var(--faint);padding:48px var(--pad) 40px;display:flex;flex-wrap:wrap;gap:24px 40px;align-items:baseline;justify-content:space-between}
+  footer ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:12px 28px;font-size:14px}
+  footer small{color:var(--muted);font-size:13px}
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    .mask > span,.reveal{transform:none!important;opacity:1!important}
+    .track,.row{flex-wrap:wrap;width:auto}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header>
+  <div class="bar">
+    <div class="brand">
+      <a href="#top" class="wordmark" aria-label="Halcyon, home">Halcyon</a>
+      <span class="descriptor">Launch films</span>
+    </div>
+    <nav aria-label="Primary">
+      <ul>
+        <li class="navlinks"><a class="u" href="#work"><span class="num">I</span>Work</a></li>
+        <li class="navlinks"><a class="u" href="#clients"><span class="num">II</span>Clients</a></li>
+        <li class="navlinks"><a class="u" href="mailto:hello@halcyon.studio"><span class="num">III</span>Email</a></li>
+        <li><a class="btn" href="https://cal.com/your-link">Book a call</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top" aria-labelledby="hero-h">
+    <h1 id="hero-h" class="js-in">
+      <span class="mask"><span>Launch</span></span>
+      <span class="mask"><span><em>films</em> with</span></span>
+      <span class="mask"><span>taste.</span></span>
+    </h1>
+    <p class="sub reveal d1">We make the film people watch twice on launch day.</p>
+    <ul class="what reveal d2" aria-label="What we do">
+      <li>Launch films</li><li>Product stories</li><li>Creator cuts</li>
+    </ul>
+    <div class="reveal d3"><a class="btn" href="https://cal.com/your-link">Book a call <span class="arr" aria-hidden="true">→</span></a></div>
+  </section>
+
+  <div id="work">
+    <section class="beat" aria-labelledby="b1">
+      <p class="label reveal">I — The problem</p>
+      <h2 id="b1"><span class="mask"><span>Everyone is launching</span></span><span class="mask"><span>the <em>same</em> way.</span></span></h2>
+      <p class="reveal d2">Same countdown. Same mockup. Same three seconds before the thumb moves on.</p>
+    </section>
+    <section class="beat" aria-labelledby="b2">
+      <p class="label reveal">II — The pressure</p>
+      <h2 id="b2"><span class="mask"><span>Everyone knows they</span></span><span class="mask"><span>need to <em>stand out</em>.</span></span></h2>
+      <p class="reveal d2">Few know what that looks like on a phone, at midnight, between two other launches.</p>
+    </section>
+    <section class="beat" aria-labelledby="b3">
+      <p class="label reveal">III — The answer</p>
+      <h2 id="b3"><span class="mask"><span>Standing out</span></span><span class="mask"><span>takes <em>taste</em>.</span></span></h2>
+      <p class="reveal d2 strong">That's why brands choose Halcyon.</p>
+    </section>
+  </div>
+
+  <section class="block" aria-labelledby="process-h">
+    <p class="label reveal">Process</p>
+    <h2 id="process-h" class="reveal">We do it <em>start</em> to finish.</h2>
+    <ol class="steps">
+      <li class="reveal"><span class="n" aria-hidden="true">I</span><h3>Understand</h3><p>We learn the product until we can say it in one sentence.</p></li>
+      <li class="reveal"><span class="n" aria-hidden="true">II</span><h3>Position</h3><p>We find the one idea worth filming. Then we cut the rest.</p></li>
+      <li class="reveal"><span class="n" aria-hidden="true">III</span><h3>Shoot</h3><p>Small crew. Real places. Nothing from a stock library.</p></li>
+      <li class="reveal"><span class="n" aria-hidden="true">IV</span><h3>Edit</h3><p>Tight cuts. Every frame earns its place.</p></li>
+      <li class="reveal"><span class="n" aria-hidden="true">V</span><h3>Creators</h3><p>We put it in front of people your audience already trusts.</p></li>
+    </ol>
+  </section>
+
+  <section class="block" id="clients" aria-labelledby="clients-h">
+    <p class="label reveal">Clients</p>
+    <h2 id="clients-h" class="reveal">Trusted by teams who <em>ship</em>.</h2>
+    <div class="logos reveal" role="list" aria-label="Client logos (placeholders)">
+      <div class="track" id="track"></div>
+    </div>
+  </section>
+
+  <section class="block cta" aria-labelledby="cta-h">
+    <h2 id="cta-h" class="reveal">Let's make yours impossible to <em>scroll</em> past.</h2>
+    <p class="reveal d1">One call. We'll tell you what we'd make, and what we wouldn't.</p>
+    <div class="reveal d2"><a class="btn" href="https://cal.com/your-link">Book a call <span class="arr" aria-hidden="true">→</span></a></div>
+  </section>
+
+  <section class="cliches" aria-labelledby="final-h">
+    <div aria-hidden="true">
+      <div class="row a" data-row="0"></div>
+      <div class="row b" data-row="1"></div>
+      <div class="row c" data-row="2"></div>
+    </div>
+    <div class="final">
+      <p id="final-h" class="reveal">Your launch, made with <em>taste</em>.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <a href="#top" class="wordmark">Halcyon</a>
+  <ul>
+    <li><a class="u" href="https://cal.com/your-link">Book a call</a></li>
+    <li><a class="u" href="mailto:hello@halcyon.studio">Email</a></li>
+    <li><a class="u" href="#top">Back to top</a></li>
+  </ul>
+  <small>© <span id="yr">2026</span> Halcyon</small>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  /* Placeholder client logos — swap each SVG for your own (keep fill="currentColor"). */
+  const logos = [
+    ['Arcfield','<circle cx="16" cy="36" r="10" fill="none" stroke="currentColor" stroke-width="2"/>'],
+    ['Kiln','<rect x="6" y="26" width="20" height="20" fill="currentColor"/>'],
+    ['Ostra','<path d="M6 46 L16 26 L26 46Z" fill="none" stroke="currentColor" stroke-width="2"/>'],
+    ['Basalt','<path d="M6 30h20M6 36h20M6 42h20" stroke="currentColor" stroke-width="2"/>'],
+    ['Fernwood','<circle cx="16" cy="36" r="10" fill="currentColor"/>'],
+    ['Meridian','<path d="M6 36h20M16 26v20" stroke="currentColor" stroke-width="2"/>'],
+    ['Pallet','<rect x="6" y="28" width="20" height="16" rx="8" fill="none" stroke="currentColor" stroke-width="2"/>'],
+    ['Lumen','<path d="M16 24 L28 36 L16 48 L4 36Z" fill="currentColor"/>']
+  ];
+  const mk = ([n, mark]) => `<div class="logo" role="listitem" aria-label="${n} (placeholder logo)"><svg viewBox="0 0 200 72" aria-hidden="true">${mark}<text x="38" y="44" fill="currentColor" font-family="Inter,system-ui,sans-serif" font-size="22" font-weight="500" letter-spacing="-.5">${n}</text></svg></div>`;
+  const html = logos.map(mk).join('');
+  const track = document.getElementById('track');
+  track.innerHTML = html + html.replace(/role="listitem"/g, 'aria-hidden="true"');
+
+  /* Industry clichés, looping */
+  const cliches = [
+    ['Introducing the all-new','The wait is over','We’re live! Link in bio','Something big is coming','Game-changer','Built different'],
+    ['3… 2… 1…','Reimagined from the ground up','You asked. We listened.','Meet the future of','Stay tuned','Drop a “yes” below'],
+    ['Smash that like button','Not just another app','Coming soon','Revolutionizing the way you','Big news','Swipe up']
+  ];
+  document.querySelectorAll('[data-row]').forEach(r => {
+    const s = cliches[r.dataset.row].map(t => `<span>${t}</span>`).join('');
+    r.innerHTML = s + s;
+  });
+
+  /* Scroll reveals */
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const targets = document.querySelectorAll('.beat, .js-in, .reveal');
+  if (reduce || !('IntersectionObserver' in window)) {
+    targets.forEach(t => t.classList.add('in'));
+  } else {
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }), { threshold: 0.25, rootMargin: '0px 0px -8% 0px' });
+    targets.forEach(t => io.observe(t));
+    document.querySelector('.hero').querySelectorAll('.reveal').forEach(t => t.classList.add('in'));
+    document.querySelector('.js-in').classList.add('in');
+  }
+</script>
+</body>
+</html>
